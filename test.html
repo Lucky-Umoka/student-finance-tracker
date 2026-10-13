@@ -18,6 +18,10 @@
       validateDescription, validateAmount, validateDate,
       validateCategory, validateRecord,
     } from "./scripts/validators.js";
+    import { compileRegex, filterRecords } from "./scripts/search.js";
+    import { sortRecords } from "./scripts/state.js";
+
+
 
     const list = document.getElementById("results");
     let passed = 0;
@@ -68,6 +72,26 @@
     assert("record valid", good.ok, true);
     const bad = validateRecord({ description: "", amount: "x", category: "1", date: "nope" });
     assert("record collects 4 errors", Object.keys(bad.errors).length, 4);
+
+
+        // Search and sort
+    const sample = [
+      { id: "txn_0001", description: "Coffee with friends", amount: 8.75, category: "Entertainment", date: "2025-09-28" },
+      { id: "txn_0002", description: "Bus pass", amount: 45, category: "Transport", date: "2025-09-20" },
+      { id: "txn_0003", description: "Chemistry textbook", amount: 89.99, category: "Books", date: "2025-09-23" },
+    ];
+
+    assert("regex: valid pattern has no error", compileRegex("coffee|tea").error, null);
+    assert("regex: broken pattern does not crash", compileRegex("(").regex, null);
+    assert("regex: broken pattern gives message", typeof compileRegex("(").error, "string");
+    assert("regex: empty box gives no regex", compileRegex("").regex, null);
+    assert("search ignores case", filterRecords(sample, compileRegex("COFFEE").regex).length, 1);
+    assert("search can be case-sensitive", filterRecords(sample, compileRegex("COFFEE", false).regex).length, 0);
+    assert("search finds by date pattern", filterRecords(sample, compileRegex("^2025-09-2[0-3]$").regex).length, 2);
+    assert("sort amount high to low", sortRecords(sample, "amount-desc")[0].id, "txn_0003");
+    assert("sort date oldest first", sortRecords(sample, "date-asc")[0].id, "txn_0002");
+    assert("sort description A to Z", sortRecords(sample, "description-asc")[0].description, "Bus pass");
+    assert("sort does not change original", sample[0].id, "txn_0001");
 
     document.getElementById("summary").textContent = `${passed} passed, ${failed} failed`;
   </script>

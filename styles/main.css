@@ -227,3 +227,59 @@ dialog {
   .stats-grid { grid-template-columns: repeat(4, 1fr); }
   main { padding: 2rem; }
 }
+
+#records-table,
+#records-table tbody { display: block; }
+
+#records-table thead {                 
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+#records-table tr {
+  display: block;
+  margin-block-end: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+#records-table td {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border: 0;
+}
+
+#records-table td::before {           
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.row-actions { display: flex; gap: 0.5rem; }
+button.small { padding: 0.3rem 0.75rem; font-size: 0.9rem; }
+
+@media (min-width: 768px) {
+  #records-table { display: table; }
+  #records-table tbody { display: table-row-group; }
+  #records-table thead {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  #records-table tr { display: table-row; margin: 0; padding: 0; border: 0; }
+  #records-table td {
+    display: table-cell;
+    padding: 0.6rem;
+    border-block-end: 1px solid var(--border);
+  }
+  #records-table td::before { content: none; }
+}
