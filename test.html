@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Validator tests</title>
+</head>
+<body>
+  <main>
+    <h1>Validator tests</h1>
+    <p id="summary" role="status"></p>
+    <ul id="results"></ul>
+  </main>
+
+  <script type="module">
+    import {
+      validateDescription, validateAmount, validateDate,
+      validateCategory, validateRecord,
+    } from "./scripts/validators.js";
+
+    const list = document.getElementById("results");
+    let passed = 0;
+    let failed = 0;
+
+    // assert(name, actual, expected): one tiny test. It prints PASS or FAIL.
+    function assert(name, actual, expected) {
+      const pass = Object.is(actual, expected);
+      pass ? passed++ : failed++;
+      const li = document.createElement("li");
+      li.textContent = `${pass ? "PASS" : "FAIL"}: ${name}`;
+      li.style.color = pass ? "#166534" : "#b91c1c";
+      list.append(li);
+    }
+
+    // Description
+    assert("description ok", validateDescription("Lunch at cafeteria").ok, true);
+    assert("description leading space", validateDescription(" Lunch").ok, false);
+    assert("description trailing space", validateDescription("Lunch ").ok, false);
+    assert("description empty", validateDescription("").ok, false);
+    assert("description duplicate word", validateDescription("Coffee coffee run").ok, false);
+    assert("description collapses double spaces", validateDescription("Bus  pass").value, "Bus pass");
+
+    // Amount
+    assert("amount 12.50", validateAmount("12.50").ok, true);
+    assert("amount 0", validateAmount("0").ok, true);
+    assert("amount leading zero", validateAmount("012").ok, false);
+    assert("amount 3 decimals", validateAmount("1.234").ok, false);
+    assert("amount negative", validateAmount("-5").ok, false);
+    assert("amount .5", validateAmount(".5").ok, false);
+    assert("amount becomes a number", validateAmount("12.50").value, 12.5);
+
+    // Date
+    assert("date ok", validateDate("2025-09-29").ok, true);
+    assert("date bad month", validateDate("2025-13-01").ok, false);
+    assert("date fake day", validateDate("2025-02-30").ok, false);
+    assert("date leap day", validateDate("2024-02-29").ok, true);
+    assert("date wrong order", validateDate("29-09-2025").ok, false);
+
+    // Category
+    assert("category Food", validateCategory("Food").ok, true);
+    assert("category with hyphen", validateCategory("Fast-food").ok, true);
+    assert("category with number", validateCategory("Food2").ok, false);
+    assert("category double hyphen", validateCategory("Fast--food").ok, false);
+
+    // Whole record
+    const good = validateRecord({ description: "Bus pass", amount: "45", category: "Transport", date: "2025-09-20" });
+    assert("record valid", good.ok, true);
+    const bad = validateRecord({ description: "", amount: "x", category: "1", date: "nope" });
+    assert("record collects 4 errors", Object.keys(bad.errors).length, 4);
+
+    document.getElementById("summary").textContent = `${passed} passed, ${failed} failed`;
+  </script>
+</body>
+</html>
