@@ -29,3 +29,172 @@ body {
 
 h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
 
+.skip-link {
+    postion: absolute;
+    inset-inline-start: 0.5rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: #ffffff;
+    border-radius: var(--radius);
+    transition: top 0.2s;
+
+    &:focus { top:0.5rem; }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+
+.site-header {
+    padding: var(--space);
+    background: var(--surface);
+    border-block-end: 1px solid var(--border);
+
+    & h1 { margin: 0 0 0.5rem; font-size: 1.4rem; }
+}
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & a {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    color: var(--primary-dark);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+
+    &:hover { background: #e0e7ff; }
+  }
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 70rem;
+  margin-inline: auto;
+  padding: var(--space);
+
+  & > section {
+    margin-block-end: var(--space);
+    padding: var(--space);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    scroll-margin-top: 1rem;
+    animation: fade-in 0.4s ease-out;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;                 /* one column on mobile */
+  gap: 0.75rem;
+  margin-block-end: var(--space);
+}
+
+.stat-card {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  & h3 { margin: 0; font-size: 0.95rem; color: var(--muted); }
+}
+
+.stat-value { margin: 0.25rem 0 0; font-size: 1.5rem; font-weight: 700; }
+
+.field { display: flex; flex-direction: column; margin-block-end: 0.75rem; }
+
+label, legend { margin-block-end: 0.25rem; font-weight: 600; }
+
+input, select, button { font: inherit; }
+
+input[type="text"], input[type="search"], select {
+  padding: 0.6rem;
+  background: #ffffff;
+  color: var(--text);
+  border: 1px solid #6b7280;
+  border-radius: var(--radius);
+}
+
+input[aria-invalid="true"] { border: 2px solid var(--danger); }
+
+input[type="checkbox"] { accent-color: var(--primary); inline-size: 1.25rem; block-size: 1.25rem; }
+
+.checkbox-field { flex-direction: row; align-items: center; gap: 0.5rem; }
+.checkbox-field label { margin: 0; }
+
+.error { min-height: 1.25rem; margin: 0.25rem 0 0; color: var(--danger); font-size: 0.9rem; }
+.hint  { color: var(--muted); font-size: 0.9rem; }
+
+fieldset { margin: 0 0 1rem; border: 1px solid var(--border); border-radius: var(--radius); }
+
+.form-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-end: 0.75rem; }
+
+button {
+  padding: 0.6rem 1rem;
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+
+  &:hover { background: var(--primary-dark); }
+  &:active { transform: scale(0.98); }
+
+  &.secondary { background: #ffffff; color: var(--primary-dark); }
+  &.secondary:hover { background: #e0e7ff; }
+  &.danger { background: var(--danger); border-color: var(--danger); }
+}
+
+.toolbar { display: flex; flex-direction: column; gap: 0.5rem; }
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.6rem; text-align: start; border-block-end: 1px solid var(--border); }
+
+mark { padding: 0 0.1em; background: #fde68a; color: #000000; }
+
+dialog {
+  max-width: min(28rem, 90vw);
+  padding: var(--space);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  &::backdrop { background: rgb(0 0 0 / 0.5); }
+  & h2 { margin-top: 0; }
+}
+
+.site-footer { padding: var(--space); text-align: center; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
