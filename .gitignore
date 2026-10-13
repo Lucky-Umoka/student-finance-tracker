@@ -3,4 +3,5 @@ Thumbs.db
 node_modules/
 .vscode/
 *.log
-rough.css
+rough.js
+rough.html
