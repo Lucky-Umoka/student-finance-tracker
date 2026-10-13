@@ -26,5 +26,37 @@
         </nav>
     </header>
 
-    <main id="main" tabindex="-1"></main>
+    <main id="main" tabindex="-1">
+
+        <section id="dashboard" aria-labelledby="dashboard-title">
+            <h2 id="dashboard-title">Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total records</h3>
+                    <p id="stat-count" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total spent</h3>
+                    <p id="stat-sum" class="stat-value">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Top category</h3>
+                    <p id="stat-top" class="stat-value">None</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Last 7 days</h3>
+                    <p id="stat-week" class="stat-value">0</p>
+                </div>
+            </div>
+
+            <h3>Spending trend (last 7 days)</h3>
+            <div id="trend-chart" class="trend" role="img" aria-label="Spending chart for the last 7 days"></div>
+
+            <h3>Budget cap</h3>
+            <p id="cap-status" role="status" aria-live="polite"></p>
+            <p id="cap-alert" role="alert" aria-live="assertive"></p>
+        </section>
+
+        
+    </main>
 </body>
