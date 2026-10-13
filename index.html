@@ -57,6 +57,95 @@
             <p id="cap-alert" role="alert" aria-live="assertive"></p>
         </section>
 
-        
+        <section id="form-section" aria-labelledby="form-title">
+            <h2 id="form-title">Add transaction</h2>
+            <form id="record-form" novalidate>
+                <input type="hidden" id="record-id">
+
+                <div class="field">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" autocomplete="off" aria-describedby="description-error">
+                    <p class="error" id="description-error"></p>
+                </div>
+
+                <div class="field">
+                    <label for="amount">Amount</label>
+                    <input type="text" id="amount" name="amount" inputmode="decimal" autocomplete="off" aria-describedby="amount-error">
+                    <p class="error" id="amount-error"></p>
+                </div>
+
+                <div class="field">
+                    <label for="category">Category</label>
+                    <input type="text" id="category" name="category" list="category-list" autocomplete="off" aria-describedby="category-error">
+                    <datalist id="category-list"></datalist>
+                    <p class="error" id="category-error"></p>
+                </div>
+
+                <div class="field">
+                    <label for="date">Date (YYYY-MM-DD)</label>
+                    <input type="text" id="date" name="date" placeholder="2025-09-29" autocomplete="off" aria-describedby="date-error">
+                    <p class="error" id="date-error"></p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="save-btn">Add transaction</button>
+                    <button type="button" id="cancel-edit" class="secondary" hidden>Cancel edit</button>
+                </div>
+                <p id="form-status" role="status"></p>
+            </form>
+        </section>
+
+        <section id="records" aria-labelledby="records-title">
+            <h2 id="record-title">Records</h2>
+
+            <div class="toolbar">
+                <div class="field grow">
+                    <label for="search">Search (regex)</label>
+                    <input type="search" id="search" placeholder="e.g. coffee|tea" aria-describedby="search-help">
+                </div>
+                <div class="field checkbox-field">
+                    <input type="checkbox" id="search-case" checked>
+                    <label for="search-case">Ignore upper/lower case</label>
+                </div>
+                <div class="field">
+                    <label for="sort-by">Sort by</label>
+                    <select id="sort-by">
+                        <option value="date-desc">Date &darr; newest first</option>
+                        <option value="date-asc">Date &uarr; oldest first</option>
+                        <option value="description-asc">Description A &rarr; Z</option>
+                        <option value="description-desc">Description Z &rarr; A</option>
+                        <option value="amount-asc">Amount &uarr; low to high</option>
+                        <option value="amount-desc">Amount &darr; high to low</option>
+                    </select>
+                </div>
+            </div>
+            <p id="search-help" class="hint">Type a regex pattern. Example: <code>\.\d{2}\b</code>finds amounts with cents.</p>
+            <p id="search-status" role="status"></p>
+
+            <div class="table-wrap">
+                <table id="records-table">
+                    <caption class="sr-only">Your transactions</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Description</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-body"></tbody>
+                </table>
+            </div>
+            <p id="empty-state" class="hint" hidden>No transactions yet. Add your first one above.</p>
+        </section>
+
+        <section id="settings" aria-labelledby="settings-title">
+            <h2 id="settings-title">Settings</h2>
+            <form id="settings-form" novalidate>
+                <fieldset>
+                    <legend>Currency</legend>
+            </form>
+        </section>
     </main>
 </body>
