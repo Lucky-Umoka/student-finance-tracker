@@ -3,6 +3,3 @@ Thumbs.db
 node_modules/
 .vscode/
 *.log
-rough.js
-rough.html
-rough.css
