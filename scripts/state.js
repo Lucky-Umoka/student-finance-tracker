@@ -1,4 +1,6 @@
-import { loadRecords, saveRecords } from "./storage.js";
+import { loadRecords, saveRecords, loadSettings, saveSettings } from "./storage.js";
+import { PATTERNS } from "./validators.js";
+import { CURRENCIES, DEFAULT_RATES } from "./currency.js";
 
 export const DEFAULT_CATEGORIES = ["Food", "Books", "Transport", "Entertainment", "Fees", "Other"];
 
@@ -6,6 +8,7 @@ let records = [];
 
 export function initState() {
   records = loadRecords();
+  settings = normalizeSettings(loadSettings());
 }
 
 export const getRecords = () => [...records];
@@ -55,4 +58,45 @@ export function sortRecords(list, sortBy) {
     else result = a.description.localeCompare(b.description, undefined, { sensitivity: "base" });
     return result * factor;
   });
+}
+
+export const DEFAULT_SETTINGS = Object.freeze({
+  baseCurrency: "USD",
+  rates: DEFAULT_RATES.USD,
+  cap: 200,
+  categories: DEFAULT_CATEGORIES,
+});
+
+let settings = normalizeSettings(null);
+
+export function normalizeSettings(raw) {
+  const base = CURRENCIES.includes(raw?.baseCurrency) ? raw.baseCurrency : DEFAULT_SETTINGS.baseCurrency;
+
+  const rates = {};
+  for (const [code, fallback] of Object.entries(DEFAULT_RATES[base])) {
+    const value = Number(raw?.rates?.[code]);
+    rates[code] = Number.isFinite(value) && value > 0 ? value : fallback;
+  }
+
+  const cap = Number(raw?.cap);
+  const validCap = Number.isFinite(cap) && cap >= 0 ? cap : DEFAULT_SETTINGS.cap;
+
+  const categories = Array.isArray(raw?.categories)
+    ? raw.categories.filter((name) => typeof name === "string" && PATTERNS.category.test(name))
+    : [];
+
+  return {
+    baseCurrency: base,
+    rates,
+    cap: validCap,
+    categories: categories.length ? categories : [...DEFAULT_CATEGORIES],
+  };
+}
+
+export const getSettings = () => structuredClone(settings);
+
+export function updateSettings(changes) {
+  settings = normalizeSettings({ ...settings, ...changes });
+  saveSettings(settings);
+  return getSettings();
 }

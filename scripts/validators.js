@@ -72,3 +72,10 @@ export function validateRecord(input) {
   }
   return { ok: Object.keys(errors).length === 0, errors, value };
 }
+
+
+export const validateCap = (raw) => {
+  const text = String(raw ?? "");
+  if (!PATTERNS.amount.test(text)) return fail("Use a number like 500 or 500.50. Use 0 for no cap.");
+  return ok(Number(text));
+};
