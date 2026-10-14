@@ -22,6 +22,8 @@
     import { sortRecords, normalizeSettings } from "./scripts/state.js";
     import { computeStats, capStatus } from "./scripts/stats.js";
     import { validateCap } from "./scripts/validators.js";
+    import { parseImport } from "./scripts/data.js";
+    import { validateRate, validateCategories } from "./scripts/validators.js";
 
 
 
@@ -117,6 +119,38 @@
     assert("cap validator accepts 0", validateCap("0").ok, true);
     assert("cap validator rejects negative", validateCap("-1").ok, false);
     assert("broken settings fall back to defaults", normalizeSettings({ cap: -5 }).cap, 200);
+
+    
+    const row = { id: "txn_1", description: "Bus", amount: 5, category: "Food", date: "2025-01-01" };
+    const importOne = (patch) => parseImport(JSON.stringify([{ ...row, ...patch }]));
+    assert("import good record", importOne({}).ok, true);
+    assert("import not JSON", parseImport("{oops").ok, false);
+    assert("import wrong shape", parseImport('{"a":1}').ok, false);
+    assert("import empty list", parseImport("[]").ok, false);
+    assert("import amount as text", importOne({ amount: "5" }).ok, false);
+    assert("import amount 3 decimals", importOne({ amount: 1.234 }).ok, false);
+    assert("import fake date", importOne({ date: "2025-02-30" }).ok, false);
+    assert("import duplicate word", importOne({ description: "the the" }).ok, false);
+    assert("import missing id", importOne({ id: undefined }).ok, false);
+    assert("import duplicate ids", parseImport(JSON.stringify([row, row])).ok, false);
+    assert("import settings object", parseImport(JSON.stringify({ records: [row], settings: { cap: 50 } })).settings.cap, 50);
+
+   
+    assert("rate ok", validateRate("0.0007").ok, true);
+    assert("rate zero", validateRate("0").ok, false);
+    assert("rate 7 decimals", validateRate("0.0000001").ok, false);
+    assert("categories ok", validateCategories("Food, Books ,Fast-food").value.length, 3);
+    assert("categories repeated", validateCategories("Food, food").ok, false);
+    assert("categories with number", validateCategories("Food, B00ks").ok, false);
+    assert("categories empty", validateCategories(" , ").ok, false);
+
+   
+    let seed = { ok: false, records: [] };
+    try {
+      seed = parseImport(await (await fetch("./seed.json")).text());
+    } catch {}
+    assert("seed.json passes import validation", seed.ok, true);
+    assert("seed.json has 10 or more records", seed.records.length >= 10, true);
 
     document.getElementById("summary").textContent = `${passed} passed, ${failed} failed`;
   </script>
