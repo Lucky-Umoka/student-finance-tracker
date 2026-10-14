@@ -1,12 +1,14 @@
 import {
   initState, getRecords, getRecord, addRecord, updateRecord,
-  deleteRecord, sortRecords, DEFAULT_CATEGORIES,
+  deleteRecord, sortRecords, getSettings,
 } from "./state.js";
 import { compileRegex, filterRecords } from "./search.js";
 import {
   validateRecord, validateDescription, validateAmount, validateCategory, validateDate,
 } from "./validators.js";
 import * as ui from "./ui.js";
+import { renderDashboard } from "./dashboard.js";
+import { initSettings } from "./settings.js";
 
 
 const searchInput = document.getElementById("search");
@@ -21,6 +23,7 @@ function refresh() {
   const sorted = sortRecords(matched, sortSelect.value);
   ui.renderRecords(sorted, regex, all.length);
   ui.showSearchStatus({ regex, error, matched: matched.length, total: all.length });
+    renderDashboard(all, getSettings());
 }
 
 
@@ -113,5 +116,5 @@ caseBox.addEventListener("change", refresh);
 sortSelect.addEventListener("change", refresh);
 
 initState();
-ui.fillCategoryList(DEFAULT_CATEGORIES);
+initSettings(refresh);
 refresh();
