@@ -8,7 +8,8 @@ import {
 } from "./validators.js";
 import * as ui from "./ui.js";
 import { renderDashboard } from "./dashboard.js";
-import { initSettings } from "./settings.js";
+import { initSettings, syncSettingsForm } from "./settings.js";
+import { initDataControls } from "./data.js";
 
 
 const searchInput = document.getElementById("search");
@@ -117,4 +118,8 @@ sortSelect.addEventListener("change", refresh);
 
 initState();
 initSettings(refresh);
+initDataControls(() => {
+  syncSettingsForm();
+  refresh();
+});
 refresh();
