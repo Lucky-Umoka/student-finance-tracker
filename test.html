@@ -19,7 +19,9 @@
       validateCategory, validateRecord,
     } from "./scripts/validators.js";
     import { compileRegex, filterRecords } from "./scripts/search.js";
-    import { sortRecords } from "./scripts/state.js";
+    import { sortRecords, normalizeSettings } from "./scripts/state.js";
+    import { computeStats, capStatus } from "./scripts/stats.js";
+    import { validateCap } from "./scripts/validators.js";
 
 
 
@@ -92,6 +94,29 @@
     assert("sort date oldest first", sortRecords(sample, "date-asc")[0].id, "txn_0002");
     assert("sort description A to Z", sortRecords(sample, "description-asc")[0].description, "Bus pass");
     assert("sort does not change original", sample[0].id, "txn_0001");
+
+    const today = new Date(2026, 9, 14); 
+    const statSample = [
+      { amount: 8.75, category: "Entertainment", date: "2026-10-14" },
+      { amount: 45, category: "Transport", date: "2026-10-10" },
+      { amount: 89.99, category: "Books", date: "2026-10-01" },
+      { amount: 0.1, category: "Books", date: "2026-10-14" },
+    ];
+    const stats = computeStats(statSample, today);
+    assert("stats count", stats.count, 4);
+    assert("stats sum is rounded", stats.sum, 143.84);
+    assert("stats top category", stats.top.name, "Books");
+    assert("stats last 7 days total", stats.weekTotal, 53.85);
+    assert("stats trend has 7 days", stats.trend.length, 7);
+    assert("stats trend last day", stats.trend[6].total, 8.85);
+    assert("stats no records", computeStats([], today).top, null);
+    assert("cap none", capStatus(10, 0, "USD").state, "none");
+    assert("cap under", capStatus(100, 200, "USD").state, "under");
+    assert("cap exactly reached is still under", capStatus(200, 200, "USD").state, "under");
+    assert("cap over", capStatus(250.5, 200, "USD").state, "over");
+    assert("cap validator accepts 0", validateCap("0").ok, true);
+    assert("cap validator rejects negative", validateCap("-1").ok, false);
+    assert("broken settings fall back to defaults", normalizeSettings({ cap: -5 }).cap, 200);
 
     document.getElementById("summary").textContent = `${passed} passed, ${failed} failed`;
   </script>
