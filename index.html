@@ -150,18 +150,20 @@
                     <div class="field">
                         <label for="base-currency">Base currency</label>
                         <select id="base-currency">
+                            <option value="USD">USD</option>
                             <option value="RWF">RWF</option>
-                            <option value="RWF">USD</option>
-                            <option value="RWF">EUR</option>
+                            <option value="EUR">EUR</option>
                         </select>
                     </div>
                     <div class="field">
                         <label for="rate-a" id="rate-a-label">Rate A</label>
-                        <input type="text" id="rate-a" inputmode="decimal">
+                        <input type="text" id="rate-a" inputmode="decimal" aria-describedby="rate-a-error">
+                        <p class="error" id="rate-a-error"></p>
                     </div>
                     <div class="field">
                         <label for="rate-b" id="rate-b-label">Rate B</label>
-                        <input type="text" id="rate-b" inputmode="decimal">
+                        <input type="text" id="rate-b" inputmode="decimal" aria-describedby="rate-b-error">
+                        <p class="error" id="rate-b-error"></p>
                     </div>
                 </fieldset>
 
@@ -183,6 +185,7 @@
 
             <h3>Your data</h3>
             <div class="form-actions">
+                        <button type="button" id="seed-btn" class="secondary">Load sample data</button>
                 <button type="button" id="export-btn">Export JSON</button>
                 <button type="button" id="clear-btn" class="danger">Delete all data</button>
             </div>
