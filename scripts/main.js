@@ -6,15 +6,18 @@ import { compileRegex, filterRecords } from "./search.js";
 import {
   validateRecord, validateDescription, validateAmount, validateCategory, validateDate,
 } from "./validators.js";
-import * as ui from "./ui.js";
 import { renderDashboard } from "./dashboard.js";
 import { initSettings, syncSettingsForm } from "./settings.js";
 import { initDataControls } from "./data.js";
-
+import * as edit from "./inline-edit.js";
+import * as ui from "./ui.js";
 
 const searchInput = document.getElementById("search");
 const caseBox = document.getElementById("search-case");
 const sortSelect = document.getElementById("sort-by");
+const recordsBody = document.getElementById("records-body");
+
+let editingId = null;  
 
 
 function refresh() {
@@ -22,11 +25,14 @@ function refresh() {
   const all = getRecords();
   const matched = filterRecords(all, regex);
   const sorted = sortRecords(matched, sortSelect.value);
-  ui.renderRecords(sorted, regex, all.length);
-  ui.showSearchStatus({ regex, error, matched: matched.length, total: all.length });
-    renderDashboard(all, getSettings());
-}
 
+
+  const editing = editingId ? { id: editingId, draft: edit.readEditRow() } : null;
+
+  ui.renderRecords(sorted, regex, all.length, editing);
+  ui.showSearchStatus({ regex, error, matched: matched.length, total: all.length });
+  renderDashboard(all, getSettings());
+}
 
 const FIELD_VALIDATORS = {
   description: validateDescription,
@@ -49,9 +55,8 @@ for (const [field, validate] of Object.entries(FIELD_VALIDATORS)) {
   });
 }
 
-
 document.getElementById("record-form").addEventListener("submit", (event) => {
-  event.preventDefault();                       
+  event.preventDefault();
 
   const result = validateRecord(ui.readForm());
   if (!result.ok) {
@@ -62,40 +67,48 @@ document.getElementById("record-form").addEventListener("submit", (event) => {
     return;
   }
 
-    const editingId = ui.getEditingId();
-    if (editingId) {
-      updateRecord(editingId, result.value);
-      ui.setStatus("form-status", `Updated "${result.value.description}".`);
-    } else {
-      addRecord(result.value);
-      ui.setStatus("form-status", `Added "${result.value.description}".`);
-    }
-  
-    ui.resetForm();
-    refresh();
-    document.getElementById("description").focus();   
-  });
-  
-  document.getElementById("cancel-edit").addEventListener("click", () => {
-    ui.resetForm();
-    ui.setStatus("form-status", "Edit cancelled.");
-  });
-
-  document.getElementById("records-body").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-action]");
-  if (!button) return;
-  const { action, id } = button.dataset;
-  if (action === "edit") startEdit(id);
-  if (action === "delete") startDelete(id);
+  addRecord(result.value);
+  ui.setStatus("form-status", `Added "${result.value.description}".`);
+  ui.resetForm();
+  refresh();
+  document.getElementById("description").focus();
 });
+
 
 function startEdit(id) {
   const record = getRecord(id);
   if (!record) return;
-  ui.fillForm(record);
-  ui.setFormMode(true);
-  ui.showFieldErrors({});
-  document.getElementById("description").focus();
+  editingId = id;
+  refresh();
+  edit.focusEditField();
+  ui.setStatus("form-status", `Editing "${record.description}". Press Enter to save or Escape to cancel.`);
+}
+
+function saveRow() {
+  const input = edit.readEditRow();
+  if (!input) return;
+
+  const result = validateRecord(input);
+  if (!result.ok) {
+    edit.showEditErrors(result.errors);
+    ui.setStatus("form-status", "Please fix the errors in the row.");
+    return;
+  }
+
+  const id = editingId;
+  updateRecord(id, result.value);
+  editingId = null;
+  refresh();
+  ui.setStatus("form-status", `Updated "${result.value.description}".`);
+  edit.focusRowButton(id);
+}
+
+function stopEdit(message) {
+  const id = editingId;
+  editingId = null;
+  refresh();
+  ui.setStatus("form-status", message);
+  edit.focusRowButton(id);
 }
 
 async function startDelete(id) {
@@ -106,15 +119,49 @@ async function startDelete(id) {
   if (!confirmed) return;
 
   deleteRecord(id);
-  if (ui.getEditingId() === id) ui.resetForm();      
+  if (editingId === id) editingId = null;
   refresh();
   ui.setStatus("form-status", `Deleted "${record.description}".`);
   ui.focusRecordsHeading();
 }
 
-searchInput.addEventListener("input", refresh);     
+
+recordsBody.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const { action, id } = button.dataset;
+  if (action === "edit") startEdit(id);
+  if (action === "delete") startDelete(id);
+  if (action === "save-row") saveRow();
+  if (action === "cancel-row") stopEdit("Edit cancelled.");
+});
+
+
+recordsBody.addEventListener("keydown", (event) => {
+  if (!editingId || !event.target.id?.startsWith("edit-")) return;
+  if (event.key === "Enter") {
+    event.preventDefault();
+    saveRow();
+  }
+  if (event.key === "Escape") {
+    event.preventDefault();
+    stopEdit("Edit cancelled.");
+  }
+});
+
+
+recordsBody.addEventListener("input", (event) => {
+  const id = event.target.id ?? "";
+  if (!id.startsWith("edit-") || event.target.getAttribute("aria-invalid") !== "true") return;
+  const field = id.slice("edit-".length);
+  edit.setEditError(field, FIELD_VALIDATORS[field](event.target.value).message ?? "");
+});
+
+
+searchInput.addEventListener("input", refresh);
 caseBox.addEventListener("change", refresh);
 sortSelect.addEventListener("change", refresh);
+
 
 initState();
 initSettings(refresh);

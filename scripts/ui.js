@@ -1,31 +1,37 @@
 import { highlight, fieldsOf } from "./search.js";
+import { buildEditRow } from "./inline-edit.js";
 
 const $ = (id) => document.getElementById(id);   
 const FIELDS = ["description", "amount", "category", "date"];
 
-export function renderRecords(records, regex, totalCount) {
+export function renderRecords(records, regex, totalCount, editing = null) {
   const body = $("records-body");
-  body.replaceChildren();  
+  body.replaceChildren();
 
   for (const record of records) {
-      const fields = fieldsOf(record);
-      const row = document.createElement("tr");
-      row.append(
-        makeCell("Description", highlight(fields.description, regex)),
-        makeCell("Amount", highlight(fields.amount, regex)),
-        makeCell("Category", highlight(fields.category, regex)),
-        makeCell("Date", highlight(fields.date, regex)),
-        makeActionsCell(record)
-      );
-      body.append(row);
+    // The row being edited becomes inputs instead of text.
+    if (editing && editing.id === record.id) {
+      body.append(buildEditRow(record, editing.draft));
+      continue;
     }
 
+    const fields = fieldsOf(record);
+    const row = document.createElement("tr");
+    row.append(
+      makeCell("Description", highlight(fields.description, regex)),
+      makeCell("Amount", highlight(fields.amount, regex)),
+      makeCell("Category", highlight(fields.category, regex)),
+      makeCell("Date", highlight(fields.date, regex)),
+      makeActionsCell(record)
+    );
+    body.append(row);
+  }
 
   const empty = $("empty-state");
   empty.hidden = records.length > 0;
   empty.textContent =
     totalCount === 0
-      ? "No transactions yet. Add your first one above."
+      ? "No transactions yet. Add your first one above, or load the sample data in Settings."
       : "No records match your search.";
 }
 
@@ -95,27 +101,9 @@ export function focusFirstError(errors) {
   if (first) $(first).focus();
 }
 
-export function fillForm(record) {
-  $("record-id").value = record.id;
-  $("description").value = record.description;
-  $("amount").value = String(record.amount);
-  $("category").value = record.category;
-  $("date").value = record.date;
-}
-
-export const getEditingId = () => $("record-id").value;
-
-export function setFormMode(editing) {
-  $("form-title").textContent = editing ? "Edit transaction" : "Add transaction";
-  $("save-btn").textContent = editing ? "Save changes" : "Add transaction";
-  $("cancel-edit").hidden = !editing;
-}
-
 export function resetForm() {
   $("record-form").reset();
-  $("record-id").value = "";
   showFieldErrors({});
-  setFormMode(false);
 }
 
 export const setStatus = (id, message) => {

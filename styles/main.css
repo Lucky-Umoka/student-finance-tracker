@@ -306,3 +306,12 @@ button.small { padding: 0.3rem 0.75rem; font-size: 0.9rem; }
 .cap-over { color: var(--danger); font-weight: 700; }
 
 .stat-card .hint { margin: 0.25rem 0 0; font-size: 0.85rem; }
+
+
+.editing-row { background: #eff6ff; }
+.editing-row td { flex-wrap: wrap; }
+.editing-row input { flex: 1; width: 100%; min-width: 0; }
+.editing-row .error { flex-basis: 100%; min-height: 0; margin: 0; }
+
+
+main:focus-visible { outline: none; }
