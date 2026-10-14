@@ -79,3 +79,25 @@ export const validateCap = (raw) => {
   if (!PATTERNS.amount.test(text)) return fail("Use a number like 500 or 500.50. Use 0 for no cap.");
   return ok(Number(text));
 };
+
+export const RATE_PATTERN = /^(0|[1-9]\d*)(\.\d{1,6})?$/;
+
+export const validateRate = (raw) => {
+  const text = String(raw ?? "");
+  if (!RATE_PATTERN.test(text) || Number(text) <= 0) {
+    return fail("Use a number above 0, like 0.0007 or 1450 (max 6 decimals).");
+  }
+  return ok(Number(text));
+};
+
+export const validateCategories = (raw) => {
+  const names = String(raw ?? "").split(",").map((name) => collapseSpaces(name.trim())).filter(Boolean);
+  if (names.length === 0) return fail("Add at least one category.");
+  if (names.length > 20) return fail("Please use 20 categories or fewer.");
+  const bad = names.find((name) => !PATTERNS.category.test(name));
+  if (bad) return fail(`"${bad}" is not allowed. Use letters, spaces and hyphens only.`);
+  const lower = names.map((name) => name.toLowerCase());
+  const repeated = lower.find((name, index) => lower.indexOf(name) !== index);
+  if (repeated) return fail(`"${repeated}" appears twice.`);
+  return ok(names);
+};

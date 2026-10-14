@@ -100,3 +100,30 @@ export function updateSettings(changes) {
   saveSettings(settings);
   return getSettings();
 }
+
+const sameContent = (a, b) =>
+  a.description === b.description && a.amount === b.amount && a.category === b.category && a.date === b.date;
+
+export function mergeRecords(list) {
+  const existing = [...records];          
+  let added = 0;
+  let skipped = 0;
+  for (const item of list) {
+    if (existing.some((record) => sameContent(record, item))) {
+      skipped++;
+      continue;
+    }
+    const idTaken = records.some((record) => record.id === item.id);
+    records.push(idTaken ? { ...item, id: nextId() } : item);
+    added++;
+  }
+  saveRecords(records);
+  return { added, skipped };
+}
+
+export function clearAll() {
+  records = [];
+  settings = normalizeSettings(null);
+  saveRecords(records);
+  saveSettings(settings);
+}
