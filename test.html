@@ -16,14 +16,12 @@
   <script type="module">
     import {
       validateDescription, validateAmount, validateDate,
-      validateCategory, validateRecord,
+      validateCategory, validateRecord, validateCap, validateRate, validateCategories,
     } from "./scripts/validators.js";
     import { compileRegex, filterRecords } from "./scripts/search.js";
     import { sortRecords, normalizeSettings } from "./scripts/state.js";
     import { computeStats, capStatus } from "./scripts/stats.js";
-    import { validateCap } from "./scripts/validators.js";
     import { parseImport } from "./scripts/data.js";
-    import { validateRate, validateCategories } from "./scripts/validators.js";
 
 
 
@@ -31,7 +29,7 @@
     let passed = 0;
     let failed = 0;
 
-    // assert(name, actual, expected): one tiny test. It prints PASS or FAIL.
+    // It prints PASS or FAIL.
     function assert(name, actual, expected) {
       const pass = Object.is(actual, expected);
       pass ? passed++ : failed++;

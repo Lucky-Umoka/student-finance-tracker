@@ -9,7 +9,6 @@ export function renderRecords(records, regex, totalCount, editing = null) {
   body.replaceChildren();
 
   for (const record of records) {
-    // The row being edited becomes inputs instead of text.
     if (editing && editing.id === record.id) {
       body.append(buildEditRow(record, editing.draft));
       continue;

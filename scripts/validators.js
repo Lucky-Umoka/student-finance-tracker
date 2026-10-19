@@ -12,13 +12,13 @@ const fail = (message) => ({ ok: false, message });
 export const collapseSpaces = (text) => text.replace(/\s{2,}/g, " ");
 
 export const isRealDate = (text) => {
-  const [year, month, day] = text.split("-").map(Number);   // "2025-02-30" -> [2025, 2, 30]
-  const d = new Date(year, month - 1, day);                 // JS months start at 0
+  const [year, month, day] = text.split("-").map(Number);   
+  const d = new Date(year, month - 1, day);                 
   return d.getFullYear() === year && d.getMonth() === month - 1 && d.getDate() === day;
 };
 
 export const validateDescription = (raw) => {
-  const text = String(raw ?? "");           // ?? "" turns null/undefined into empty text
+  const text = String(raw ?? "");           
   if (!PATTERNS.description.test(text)) {
     return fail("Required. No spaces at the start or end.");
   }
