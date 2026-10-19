@@ -1,5 +1,6 @@
 import { highlight, fieldsOf } from "./search.js";
 import { buildEditRow } from "./inline-edit.js";
+import { showToast } from "./toast.js";
 
 const $ = (id) => document.getElementById(id);   
 const FIELDS = ["description", "amount", "category", "date"];
@@ -105,9 +106,12 @@ export function resetForm() {
   showFieldErrors({});
 }
 
-export const setStatus = (id, message) => {
+export function setStatus(id, message) {
   $(id).textContent = message;
-};
+  if (!message) return;
+  const isError = /^(Please fix|Import failed|Could not)/.test(message);
+  showToast(message, isError ? "error" : "success");
+}
 
 export function fillCategoryList(categories) {
   const options = categories.map((name) => {
