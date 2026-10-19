@@ -20,9 +20,9 @@ To help students track their spending, set a budget cao, and search records with
 ## Settings (saved separately)
 
 {
-    "baseCurrency": "RWF",
+    "baseCurrency": "USD",
     "rates": { "USD": 0.0007, "EUR": 0.0006 },
-    "cap": 50000,
+    "cap": 200,
     "categories": ["Food", "Books", "Transport", "Entertainment", "Feed", "Other"]
 }
 
