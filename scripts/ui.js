@@ -129,7 +129,8 @@ export function askConfirm(message) {
 }
 
 export function focusRecordsHeading() {
-  const heading = $("records-title");
+  const heading = $("records-title") ?? document.querySelector("#records h2");
+  if (!heading) return;
   heading.setAttribute("tabindex", "-1");
   heading.focus();
 }
