@@ -3,9 +3,16 @@
 A responsive, accessible finance tracker for students, built with HTML, CSS and JavaScript.
 
 Theme: Student Finance Tracker
+
 Live site (GitHub Pages): https://lucky-umoka.github.io/student-finance-tracker/
+
 Demo video: 
-Author: Lucky Umoka | GitHub: https://github.com/lucky-umoka | Email: l.umoka@alustudent.com
+
+Author: Lucky Umoka
+
+GitHub: https://github.com/lucky-umoka 
+
+Email: l.umoka@alustudent.com
 
 ## Features
 - Add, edit (inside the table row), and delete transactions with a confirm dialog
