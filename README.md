@@ -24,6 +24,7 @@ Email: l.umoka@alustudent.com
 - Settings: base currency plus two others with manual rates, cap, and editable categories
 - Auto-saves to localStorage; JSON export and import with validation; sample data button
 - Keyboard-friendly, with skip link, visible focus and ARIA live regions
+- Toast notifications confirms every action.
 
 ## How to run
 1. Clone the repo.
