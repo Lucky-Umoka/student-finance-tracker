@@ -36,3 +36,7 @@
     | Search | Sort                        |
     | Table: desc | amount | cat | date    |
     +--------------------------------------+
+
+
+![Hand-drawn mobile wireframe: stacked dashboard cards, form, search and record cards](../assets/wireframe-mobile.jpg)
+![Hand-drawn desktop wireframe: four stat cards in a row, form, search, and table](../assets/wireframe-desktop.jpg)

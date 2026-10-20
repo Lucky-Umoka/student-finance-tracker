@@ -24,7 +24,7 @@ Email: l.umoka@alustudent.com
 - Settings: base currency plus two others with manual rates, cap, and editable categories
 - Auto-saves to localStorage; JSON export and import with validation; sample data button
 - Keyboard-friendly, with skip link, visible focus and ARIA live regions
-- Toast notifications confirms every action.
+- Toast notifications confirm every action.
 
 ## How to run
 1. Clone the repo.
@@ -54,7 +54,7 @@ Extra checks on top of the regex: the date must be a real calendar day (so `2025
 | Key | What it does |
 |---|---|
 | Tab / Shift+Tab | Move to the next / previous control |
-| Tab (first press on page) | Reveals the "Skip to main content" link |
+| Tab (first press on page) | Reveals the "Skip to the main content" link |
 | Enter | Follow a link, press a button, or save the row being edited |
 | Escape | Cancel the row edit, or close the delete dialog |
 | Space | Press a button or toggle the case checkbox |
