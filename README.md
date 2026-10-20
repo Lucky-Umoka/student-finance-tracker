@@ -6,7 +6,7 @@ Theme: Student Finance Tracker
 
 Live site (GitHub Pages): https://lucky-umoka.github.io/student-finance-tracker/
 
-Demo video: 
+Demo video: https://youtu.be/IsqC3KgYBUA
 
 Author: Lucky Umoka
 
