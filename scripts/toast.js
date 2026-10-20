@@ -1,7 +1,7 @@
 const MAX_TOASTS = 3;
 const SHOW_MS = 4000;
 
-export function showToast(messasge, kind = "success") {
+export function showToast(message, kind = "success") {
     const region = document.getElementById("toast-region");
     if (!region || !message) return;
 
