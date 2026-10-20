@@ -90,3 +90,5 @@ scripts/  main.js  state.js  storage.js  ui.js  validators.js  search.js
 docs/     spec.md  a11y-and-wireframes.md
 assets/
 ```
+# CodeVibe
+CodeVibe was installed partway through and could not export its report. See (docs/codevibe-note.md).

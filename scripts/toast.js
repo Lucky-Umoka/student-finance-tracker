@@ -6,7 +6,7 @@ export function showToast(message, kind = "success") {
     if (!region || !message) return;
 
     const toast = document.createElement("div");
-    toast.className = 'toast toast-${kind}';
+    toast.className = `toast toast-${kind}`;
     toast.textContent = message;
     toast.addEventListener("click", () => toast.remove());
     region.append(toast);
